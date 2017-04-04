@@ -14,6 +14,7 @@ import java.util.Map;
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.dto.AlunoSync;
 import br.com.alura.agenda.event.AtualizaListaAlunoEvent;
+import br.com.alura.agenda.sinc.AlunoSincronizador;
 
 /**
  * Created by alura on 12/8/16.
@@ -38,9 +39,7 @@ public class AgendaMessagingService extends FirebaseMessagingService {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 AlunoSync alunoSync = mapper.readValue(json, AlunoSync.class);
-                AlunoDAO alunoDAO = new AlunoDAO(this);
-                alunoDAO.sincroniza(alunoSync.getAlunos());
-                alunoDAO.close();
+                new AlunoSincronizador(AgendaMessagingService.this).sincroniza(alunoSync);
                 EventBus eventBus = EventBus.getDefault();
                 eventBus.post(new AtualizaListaAlunoEvent());
             } catch (IOException e) {

@@ -57,14 +57,7 @@ public class AlunoSincronizador {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-                String versao = alunoSync.getMomentoDaUltimaModificacao();
-
-                preferences.salvaVersao(versao);
-
-
-                AlunoDAO dao = new AlunoDAO(context);
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
+                sincroniza(alunoSync);
 
                 Log.i("versao", preferences.getVersao());
 
@@ -78,6 +71,17 @@ public class AlunoSincronizador {
                 bus.post(new AtualizaListaAlunoEvent());
             }
         };
+    }
+
+    public void sincroniza(AlunoSync alunoSync) {
+        String versao = alunoSync.getMomentoDaUltimaModificacao();
+
+        preferences.salvaVersao(versao);
+
+
+        AlunoDAO dao = new AlunoDAO(context);
+        dao.sincroniza(alunoSync.getAlunos());
+        dao.close();
     }
 
     private void sincronizaAlunosInternos(){
