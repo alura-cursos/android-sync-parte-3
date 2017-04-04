@@ -69,6 +69,7 @@ public class AlunoSincronizador {
                 Log.i("versao", preferences.getVersao());
 
                 bus.post(new AtualizaListaAlunoEvent());
+                sincronizaAlunosInternos();
             }
 
             @Override
@@ -79,7 +80,7 @@ public class AlunoSincronizador {
         };
     }
 
-    public void sincronizaAlunosInternos(){
+    private void sincronizaAlunosInternos(){
         final AlunoDAO dao = new AlunoDAO(context);
 
         final List<Aluno> alunos = dao.listaNaoSincronizados();
